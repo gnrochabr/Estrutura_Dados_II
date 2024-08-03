@@ -30,6 +30,7 @@ int main(){
         printf("%i - %s\n",alunos[j]->matricula,alunos[j]->nome);
     }
     pesquisaAluno(alunos,tamanho);
+    free(alunos);
     return 0;
 }
 
