@@ -126,7 +126,9 @@ void excluirAluno(Aluno *alunos[], int *tamanho) {
     }
 }
 
-int main(){
+
+/* Base para desenvolvimento da tarefa
+    int main(){
     int tamanho = 10;
     Aluno *alunos[tamanho];
     //Aluno novoAluno;
@@ -167,4 +169,4 @@ else
     printf("Aluno não encontrado!");
 }
 
-}
+}*/
