@@ -16,12 +16,12 @@ void pesquisaAluno(Aluno *alunos[], int tamanho);
 void imprimirVetor(Aluno *alunos[], int tamanho);
 void ordenarTurma(Aluno *alunos[], int tamanho);
 void excluirAluno(Aluno *alunos[], int *tamanho);
+void insereAluno(Aluno *alunos[], int *tamanho, int *matricula);
 
 int main() {
     int tamanho = TAM_PADRAO;
     Aluno *alunos[tamanho];
     int matricula = 1;
-    free(alunos);
     // Alocando memória para cada aluno e inicializando os valores
     for (int i = 0; i < tamanho; i++) {
         alunos[i] = (Aluno *)malloc(sizeof(Aluno));
@@ -42,6 +42,7 @@ int main() {
         case 2: ordenarTurma(alunos,tamanho); break;
         case 3: excluirAluno(alunos,&tamanho); break;
         case 4: imprimirVetor(alunos,tamanho); break;
+        case 5: insereAluno(alunos,&tamanho,&matricula); break;
         case 0:  // Liberando a memória alocada
         for (int i = 0; i < tamanho; i++) {
         free(alunos[i]);
@@ -111,4 +112,25 @@ void excluirAluno(Aluno *alunos[], int *tamanho) {
     } else {
         printf("Aluno nao encontrado!\n\n");
     }
+}
+
+void insereAluno(Aluno *alunos[], int *tamanho, int *matricula) {
+    
+    if (*tamanho >= TAM_PADRAO) {
+        printf("Nao e possivel adicionar mais alunos, limite maximo atingido.\n");
+        return;
+    }  
+    if(*tamanho < TAM_PADRAO){ // Ou um else... está if para melhor compreensão
+    *alunos = realloc(*alunos, (*tamanho + 1) * sizeof(Aluno *));
+    Aluno *novoaluno = (Aluno *)malloc(sizeof(Aluno));
+    novoaluno->matricula = *matricula;
+    printf("- Inserindo novo aluno -\nDigite o nome do novo aluno: ");
+    scanf("%s", novoaluno->nome);
+    printf("- Digite o endereco do novo aluno: ");
+    scanf("%s", novoaluno->endereco);
+    printf("- Digite a data de nascimento do novo aluno: ");
+    scanf("%s", novoaluno->data_nasc);
+    alunos[*tamanho] = novoaluno;
+    (*tamanho)++;
+    (*matricula)++;}
 }
