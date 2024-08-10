@@ -42,7 +42,6 @@ int main() {
         case 2: ordenarTurma(alunos,tamanho); break;
         case 3: excluirAluno(alunos,&tamanho); break;
         case 4: imprimirVetor(alunos,tamanho); break;
-        case 5: insereAluno(alunos,&tamanho,&matricula); break;
         case 0:  // Liberando a memória alocada
         for (int i = 0; i < tamanho; i++) {
         free(alunos[i]);
