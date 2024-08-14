@@ -1,4 +1,4 @@
-### Exercício 1: Soma de Elementos
+## Exercício 1: Soma de Elementos
 Dado o seguinte algoritmo, determine a complexidade em termos de Big O:
 ```c
 int soma(int vetor[], int n) {
@@ -9,9 +9,9 @@ int soma(int vetor[], int n) {
     return soma;
 }
 ```
-**Pergunta:** Qual é a complexidade desse algoritmo?
+Qual é a complexidade desse algoritmo?
 
-### Exercício 2: Multiplicação de Matrizes
+## Exercício 2: Multiplicação de Matrizes
 Considere o algoritmo abaixo para multiplicar duas matrizes:
 ```c
 void multiplica_matrizes(int A[][n], int B[][n], int C[][n], int n) {
@@ -25,9 +25,9 @@ void multiplica_matrizes(int A[][n], int B[][n], int C[][n], int n) {
     }
 }
 ```
-**Pergunta:** Qual é a complexidade desse algoritmo em termos de n?
+Qual é a complexidade desse algoritmo em termos de n?
 
-### Exercício 3: Busca Binária
+## Exercício 3: Busca Binária
 Analise a complexidade do seguinte algoritmo de busca binária:
 ```c
 int busca_binaria(int vetor[], int n, int x) {
@@ -44,9 +44,9 @@ int busca_binaria(int vetor[], int n, int x) {
     return -1;
 }
 ```
-**Pergunta:** Qual é a complexidade do algoritmo de busca binária?
+Qual é a complexidade do algoritmo de busca binária?
 
-### Exercício 4: Verificação de Número Primo
+## Exercício 4: Verificação de Número Primo
 Dado o algoritmo abaixo que verifica se um número é primo, determine a complexidade:
 ```c
 int eh_primo(int n) {
@@ -59,9 +59,9 @@ int eh_primo(int n) {
     return 1;
 }
 ```
-**Pergunta:** Qual é a complexidade do algoritmo para verificar se um número é primo?
+Qual é a complexidade do algoritmo para verificar se um número é primo?
 
-### Exercício 5: Ordenação por Inserção
+## Exercício 5: Ordenação por Inserção
 Analise a complexidade do algoritmo de ordenação por inserção abaixo:
 ```c
 void insertion_sort(int vetor[], int n) {
@@ -76,9 +76,9 @@ void insertion_sort(int vetor[], int n) {
     }
 }
 ```
-**Pergunta:** Qual é a complexidade do pior caso para o algoritmo de ordenação por inserção?
+Qual é a complexidade do pior caso para o algoritmo de ordenação por inserção?
 
-### Exercício 6: Fibonacci Recursivo
+## Exercício 6: Fibonacci Recursivo
 Considere o seguinte algoritmo recursivo para calcular o n-ésimo número de Fibonacci:
 ```c
 int fibonacci(int n) {
@@ -87,9 +87,9 @@ int fibonacci(int n) {
     return fibonacci(n-1) + fibonacci(n-2);
 }
 ```
-**Pergunta:** Qual é a complexidade do algoritmo recursivo para calcular o n-ésimo número de Fibonacci?
+Qual é a complexidade do algoritmo recursivo para calcular o n-ésimo número de Fibonacci?
 
-### Exercício 7: Soma Recursiva dos Números de 1 a N
+## Exercício 7: Soma Recursiva dos Números de 1 a N
 Analise a complexidade do algoritmo recursivo abaixo:
 ```c
 int soma_recursiva(int n) {
@@ -98,9 +98,9 @@ int soma_recursiva(int n) {
     return n + soma_recursiva(n - 1);
 }
 ```
-**Pergunta:** Qual é a complexidade do algoritmo para somar recursivamente os números de 1 a N?
+Qual é a complexidade do algoritmo para somar recursivamente os números de 1 a N?
 
-### Exercício 8: Quick Sort
+## Exercício 8: Quick Sort
 Dado o seguinte algoritmo de Quick Sort, determine sua complexidade no melhor, pior e caso médio:
 ```c
 void quick_sort(int vetor[], int baixo, int alto) {
@@ -111,9 +111,9 @@ void quick_sort(int vetor[], int baixo, int alto) {
     }
 }
 ```
-**Pergunta:** Qual é a complexidade do Quick Sort nos três casos (melhor, pior e caso médio)?
+Qual é a complexidade do Quick Sort nos três casos (melhor, pior e caso médio)?
 
-### Exercício 9: Contagem de Dígitos
+## Exercício 9: Contagem de Dígitos
 Analise a complexidade do seguinte algoritmo que conta o número de dígitos de um número inteiro:
 ```c
 int conta_digitos(int n) {
@@ -125,9 +125,9 @@ int conta_digitos(int n) {
     return contagem;
 }
 ```
-**Pergunta:** Qual é a complexidade desse algoritmo para contar o número de dígitos?
+Qual é a complexidade desse algoritmo para contar o número de dígitos?
 
-### Exercício 10: Merge Sort
+## Exercício 10: Merge Sort
 Considere o seguinte algoritmo de Merge Sort:
 ```c
 void merge_sort(int vetor[], int l, int r) {
@@ -139,4 +139,8 @@ void merge_sort(int vetor[], int l, int r) {
     }
 }
 ```
-**Pergunta:** Qual é a complexidade do algoritmo de Merge Sort?
+Qual é a complexidade do algoritmo de Merge Sort?
+
+---
+
+Esses exercícios cobrem uma variedade de algoritmos e ajudam a entender a aplicação da notação Big O em diferentes cenários.
