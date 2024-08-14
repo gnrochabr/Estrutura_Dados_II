@@ -141,6 +141,4 @@ void merge_sort(int vetor[], int l, int r) {
 ```
 Qual é a complexidade do algoritmo de Merge Sort?
 
----
 
-Esses exercícios cobrem uma variedade de algoritmos e ajudam a entender a aplicação da notação Big O em diferentes cenários.
