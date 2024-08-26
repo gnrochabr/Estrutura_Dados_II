@@ -2,7 +2,7 @@
 
 // Autor: Arthur Gomes da Silva
 
-// Função para escolher o processador
+// Função para selecionar o processador
 void selecioneProcessador() {
     int opcao;
     printf("Selecione o processador:\n");
@@ -28,7 +28,7 @@ void selecioneProcessador() {
     }
 }
 
-// Função para escolher a memória RAM
+// Função para selecionar a memória RAM
 void selecioneMemoriaRAM() {
     int opcao;
     printf("\nSelecione a memória RAM:\n");
@@ -54,7 +54,7 @@ void selecioneMemoriaRAM() {
     }
 }
 
-// Função para escolher o armazenamento
+// Função para selecionar o armazenamento
 void selecioneArmazenamento() {
     int opcao;
     printf("\nSelecione o armazenamento:\n");
