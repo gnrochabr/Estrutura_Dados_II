@@ -1,0 +1,95 @@
+#include <stdio.h>
+
+// Autor: Arthur Gomes da Silva
+
+// Função para escolher o processador
+void selecioneProcessador() {
+    int opcao;
+    printf("Selecione o processador:\n");
+    printf("1. Intel Core i9\n");
+    printf("2. AMD Ryzen 9\n");
+    printf("3. Apple M1\n");
+    printf("Digite a opcao desejada: ");
+    scanf("%d", &opcao);
+
+    switch (opcao) {
+        case 1:
+            printf("Você escolheu: Intel Core i9\n");
+            break;
+        case 2:
+            printf("Você escolheu: AMD Ryzen 9\n");
+            break;
+        case 3:
+            printf("Você escolheu: Apple M1\n");
+            break;
+        default:
+            printf("Opcao invalida! Escolhendo o processador padrão: Intel Core i9\n");
+            break;
+    }
+}
+
+// Função para escolher a memória RAM
+void selecioneMemoriaRAM() {
+    int opcao;
+    printf("\nSelecione a memória RAM:\n");
+    printf("1. 8GB\n");
+    printf("2. 16GB\n");
+    printf("3. 32GB\n");
+    printf("Digite a opcao desejada: ");
+    scanf("%d", &opcao);
+
+    switch (opcao) {
+        case 1:
+            printf("Você escolheu: 8GB\n");
+            break;
+        case 2:
+            printf("Você escolheu: 16GB\n");
+            break;
+        case 3:
+            printf("Você escolheu: 32GB\n");
+            break;
+        default:
+            printf("Opcao invalida! Escolhendo a memória padrão: 8GB\n");
+            break;
+    }
+}
+
+// Função para escolher o armazenamento
+void selecioneArmazenamento() {
+    int opcao;
+    printf("\nSelecione o armazenamento:\n");
+    printf("1. 256GB SSD\n");
+    printf("2. 512GB SSD\n");
+    printf("3. 1TB HDD\n");
+    printf("Digite a opcao desejada: ");
+    scanf("%d", &opcao);
+
+    switch (opcao) {
+        case 1:
+            printf("Você escolheu: 256GB SSD\n");
+            break;
+        case 2:
+            printf("Você escolheu: 512GB SSD\n");
+            break;
+        case 3:
+            printf("Você escolheu: 1TB HDD\n");
+            break;
+        default:
+            printf("Opcao invalida! Escolhendo o armazenamento padrão: 256GB SSD\n");
+            break;
+    }
+}
+
+// Função principal que executa o programa
+int main() {
+    printf("Bem-vindo ao PC Builder\n");
+
+    // Chamando as funções para escolher os componentes
+    selecioneProcessador();
+    selecioneMemoriaRAM();
+    selecioneArmazenamento();
+
+    printf("\nMontagem concluída!\n");
+
+    return 0;
+}
