@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct no {
+    int vazio;
+    struct no *esq;     // cria um ponteiro para o nó esquerdo e outro para o nó da direita
+    struct no *dir;
+} No;
+
+No* criarNo(int valor) {
+    No *novoNo = (No*) malloc(sizeof(No));   // está criando um nó
+    novoNo->vazio = valor;
+    novoNo->esq = NULL;
+    novoNo->dir = NULL;
+    return novoNo;
+}
+
+void inserir(No **raiz, int valor) {
+    if (*raiz == NULL) {
+        *raiz = criarNo(valor);              // insere um nó na raiz
+    } else {
+        if (valor < (*raiz)->vazio) {
+            inserir(&(*raiz)->esq, valor);
+        } else {
+            inserir(&(*raiz)->dir, valor);
+        }
+    }
+}
+
+int pesquisar(No *raiz, int valor) {
+    if (raiz == NULL) {
+        return 0;                             // ao pesquisar o valor na árvore, se não encontrar um elemento retorna 0 e se encontrar retorna 1
+    } else if (raiz->vazio == valor) {
+        return 1; 
+    } else if (valor < raiz->vazio) {
+        return pesquisar(raiz->esq, valor);
+    } else {
+        return pesquisar(raiz->dir, valor);
+    }
+}
+
+
+No* remover(No *raiz, int valor) {
+    if (raiz == NULL) {
+        return raiz;                                   // remove um nó da árvore
+    } else if (valor < raiz->vazio) {
+        raiz->esq = remover(raiz->esq, valor);
+    } else if (valor > raiz->vazio) {
+        raiz->dir = remover(raiz->dir, valor);
+    } else {
+        if (raiz->esq == NULL && raiz->dir == NULL) {   // nó folha
+            free(raiz);
+            raiz = NULL;
+        } else if (raiz->esq == NULL) {                 // um filho a direita
+            No *temp = raiz;
+            raiz = raiz->dir;
+            free(temp);
+        } else if (raiz->dir == NULL) {                 // um filho a esquerda
+            No *temp = raiz;
+            raiz = raiz->esq;
+            free(temp);
+        } else {                                           
+            No *temp = raiz->dir;                       // dois filhos
+            while (temp->esq != NULL) {                // encontra o menor nó na subárvore direita
+                temp = temp->esq;
+            }
+            raiz->vazio = temp->vazio;
+            raiz->dir = remover(raiz->dir, temp->vazio);
+        }
+    }
+    return raiz;
+}
+
+
+void imprimirEmOrdem(No *raiz) {                       // faz a impressão da arvore em ordem
+    if (raiz != NULL) {
+        imprimirEmOrdem(raiz->esq);
+        printf("%d ", raiz->vazio);
+        imprimirEmOrdem(raiz->dir);
+    }
+}
+
+int main() {
+    No *raiz = NULL;
+
+    inserir(&raiz, 50);
+    inserir(&raiz, 30);
+    inserir(&raiz, 20);
+    inserir(&raiz, 40);
+    inserir(&raiz, 70);
+    inserir(&raiz, 60);
+    inserir(&raiz, 80);
+
+    printf("Árvore em ordem: ");
+    imprimirEmOrdem(raiz);
+    printf("\n");
+
+    if (pesquisar(raiz, 20)) {
+        printf("Valor 20 encontrado\n");                // uso das funções...
+        remover(raiz, 20);
+
+        printf("Árvore após remover [20]: ");
+        imprimirEmOrdem(raiz);
+        printf("\n");
+    }
+    else{
+        printf("Valor 20 não encontrado\n");
+        printf("Lista atual: ");
+        imprimirEmOrdem(raiz);
+        printf("\n");
+    }
+
+    if (pesquisar(raiz, 70)) {
+        printf("Valor 70 encontrado\n");
+        remover(raiz, 70);
+
+        printf("Árvore após remover [70]: ");
+        imprimirEmOrdem(raiz);
+        printf("\n");
+    }
+    else{
+        printf("Valor 70 não encontrado\n");
+        printf("Lista atual: ");
+        imprimirEmOrdem(raiz);
+        printf("\n");
+    }
+
+    return 0;
+}
