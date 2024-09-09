@@ -1,0 +1,201 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Estrutura para o nó da Árvore AVL
+typedef struct Node {
+    int key;
+    struct Node* left;
+    struct Node* right;
+    int height;
+} Node;
+
+// Função para obter a altura de um nó
+int height(Node* node) {
+    if (node == NULL)
+        return 0;
+    return node->height;
+}
+
+// Função para obter o valor máximo entre dois inteiros
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Função para criar um novo nó
+Node* createNode(int key) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->key = key;
+    node->left = NULL;
+    node->right = NULL;
+    node->height = 1;
+    return node;
+}
+
+// Função para rotacionar à direita a subárvore com raiz y
+Node* rotateRight(Node* y) {
+    Node* x = y->left;
+    Node* T2 = x->right;
+
+    // Rotação
+    x->right = y;
+    y->left = T2;
+
+    // Atualiza as alturas
+    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = max(height(x->left), height(x->right)) + 1;
+
+    // Retorna a nova raiz
+    return x;
+}
+
+// Função para rotacionar à esquerda a subárvore com raiz x
+Node* rotateLeft(Node* x) {
+    Node* y = x->right;
+    Node* T2 = y->left;
+
+    // Rotação
+    y->left = x;
+    x->right = T2;
+
+    // Atualiza as alturas
+    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
+
+    // Retorna a nova raiz
+    return y;
+}
+
+// Função para obter o fator de balanceamento de um nó
+int getBalance(Node* node) {
+    if (node == NULL)
+        return 0;
+    return height(node->left) - height(node->right);
+}
+
+// Função para inserir um nó na árvore AVL
+Node* insert(Node* node, int key) {
+    // Passo 1: Inserção normal em uma árvore binária de busca
+    if (node == NULL)
+        return createNode(key);
+
+    if (key < node->key)
+        node->left = insert(node->left, key);
+    else if (key > node->key)
+        node->right = insert(node->right, key);
+    else
+        return node; // Chaves duplicadas não são permitidas
+
+    // Passo 2: Atualiza a altura do nó atual
+    node->height = 1 + max(height(node->left), height(node->right));
+
+    // Passo 3: Obtém o fator de balanceamento do nó atual para verificar se ele está desbalanceado
+    int balance = getBalance(node);
+
+    // Caso 1: Desbalanceamento à esquerda-esquerda
+    if (balance > 1 && key < node->left->key)
+        return rotateRight(node);
+
+    // Caso 2: Desbalanceamento à direita-direita
+    if (balance < -1 && key > node->right->key)
+        return rotateLeft(node);
+
+    // Caso 3: Desbalanceamento à esquerda-direita
+    if (balance > 1 && key > node->left->key) {
+        node->left = rotateLeft(node->left);
+        return rotateRight(node);
+    }
+
+    // Caso 4: Desbalanceamento à direita-esquerda
+    if (balance < -1 && key < node->right->key) {
+        node->right = rotateRight(node->right);
+        return rotateLeft(node);
+    }
+
+    // Retorna o nó (inalterado) se estiver balanceado
+    return node;
+}
+
+// Função para percorrer a árvore em pré-ordem
+void preOrder(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->key);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+// Função para percorrer a árvore em em-ordem
+void inOrder(Node* root) {
+    if (root != NULL) {
+        inOrder(root->left);
+        printf("%d ", root->key);
+        inOrder(root->right);
+    }
+}
+
+// Função para percorrer a árvore em pós-ordem
+void postOrder(Node* root) {
+    if (root != NULL) {
+        postOrder(root->left);
+        postOrder(root->right);
+        printf("%d ", root->key);
+    }
+}
+
+// Função para o menu de interação com o usuário
+void menu() {
+    printf("\n\n====== Árvore AVL Dinâmica ======\n");
+    printf("1. Inserir elemento\n");
+    printf("2. Imprimir Pré-Ordem\n");
+    printf("3. Imprimir Em-Ordem\n");
+    printf("4. Imprimir Pós-Ordem\n");
+    printf("0. Sair\n");
+    printf("Escolha uma opção: ");
+}
+
+int main() {
+    Node* root = NULL;
+    int option, key;
+
+    do {
+        menu();
+        scanf("%d", &option);
+
+        switch (option) {
+            case 1:
+                printf("Digite o valor para inserir: ");
+                scanf("%d", &key);
+                root = insert(root, key);
+                printf("Elemento inserido com sucesso!\n");
+                break;
+
+            case 2:
+                printf("Percurso Pré-Ordem: ");
+                preOrder(root);
+                printf("\n");
+                break;
+
+            case 3:
+                printf("Percurso Em-Ordem: ");
+                inOrder(root);
+                printf("\n");
+                break;
+
+            case 4:
+                printf("Percurso Pós-Ordem: ");
+                postOrder(root);
+                printf("\n");
+                break;
+
+            case 0:
+                printf("Saindo...\n");
+                break;
+
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+        }
+
+    } while (option != 0);
+
+    return 0;
+}
