@@ -1,0 +1,258 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int valor;
+    char cor;
+    struct No *Filhoesquerda, *Filhodireita, *pai;
+} No;
+
+void rotacaoEsquerda(No **raiz, No *x) {
+    No *y = x->Filhodireita;
+    x->Filhodireita = y->Filhoesquerda;
+    if (y->Filhoesquerda != NULL) {
+        y->Filhoesquerda->pai = x;
+    }
+    y->pai = x->pai;
+    if (x->pai == NULL) { // x é a raiz
+        *raiz = y;
+    } else if (x == x->pai->Filhoesquerda) {
+        x->pai->Filhoesquerda = y;
+    } else {
+        x->pai->Filhodireita = y;
+    }
+    y->Filhoesquerda = x;
+    x->pai = y;
+}
+
+void rotacaoDireita(No **raiz, No *x) {
+    No *y = x->Filhoesquerda;
+    x->Filhoesquerda = y->Filhodireita;
+    if (y->Filhodireita != NULL) {
+        y->Filhodireita->pai = x;
+    }
+    y->pai = x->pai;
+    if (x->pai == NULL) { // x é a raiz
+        *raiz = y;
+    } else if (x == x->pai->Filhodireita) {
+        x->pai->Filhodireita = y;
+    } else {
+        x->pai->Filhoesquerda = y;
+    }
+    y->Filhodireita = x;
+    x->pai = y;
+}
+
+
+void corrigir(No **raiz, No *z) {
+    while (z != *raiz && z->pai->cor == 'V') {
+        if (z->pai == z->pai->pai->Filhoesquerda) {
+            No *y = z->pai->pai->Filhodireita;
+            if (y != NULL && y->cor == 'V') { // Caso 1
+                z->pai->cor = 'P';
+                y->cor = 'P';
+                z->pai->pai->cor = 'V';
+                z = z->pai->pai;
+            } else {
+                if (z == z->pai->Filhodireita) { // Caso 2
+                    z = z->pai;
+                    rotacaoEsquerda(raiz, z);
+                }
+                z->pai->cor = 'P'; // Caso 3
+                z->pai->pai->cor = 'V';
+                rotacaoDireita(raiz, z->pai->pai);
+            }
+        } else {
+            // Mesmos casos, mas com "Filhoesquerda" e "Filhodireita" trocados
+            No *y = z->pai->pai->Filhoesquerda;
+            if (y != NULL && y->cor == 'V') { // Caso 1
+                z->pai->cor = 'P';
+                y->cor = 'P';
+                z->pai->pai->cor = 'V';
+                z = z->pai->pai;
+            } else {
+                if (z == z->pai->Filhoesquerda) { // Caso 2
+                    z = z->pai;
+                    rotacaoDireita(raiz, z);
+                }
+                z->pai->cor = 'P'; // Caso 3
+                z->pai->pai->cor = 'V';
+                rotacaoEsquerda(raiz, z->pai->pai);
+            }
+        }
+    }
+    (*raiz)->cor = 'P';
+}
+
+
+
+void inserir(No **raiz, int valor) {
+    No *y = NULL;
+    No *x = *raiz;
+
+    while (x != NULL) {
+        y = x;
+        if (valor < x->valor) {
+            x = x->Filhoesquerda;
+        } else if (valor > x->valor) {
+            x = x->Filhodireita;
+        } else {
+            return; // Valor já existe
+        }
+    }
+
+    No *z = (No *)malloc(sizeof(No));
+    z->valor = valor;
+    z->pai = y;
+    z->Filhoesquerda = z->Filhodireita = NULL;
+    z->cor = 'V'; // Novo nó é vermelho
+
+    if (y == NULL) {
+        *raiz = z;
+    } else if (valor < y->valor) {
+        y->Filhoesquerda = z;
+    } else {
+        y->Filhodireita = z;
+    }
+
+    if (z->pai == NULL) {
+        z->cor = 'P';
+        return;
+    }
+
+    if (z->pai->pai == NULL) {
+        return;
+    }
+
+    corrigir(raiz, z);
+}
+
+
+// Função para imprimir a árvore em ordem
+void imprimirArvore(No *raiz) {
+    if (raiz != NULL) {
+        imprimirArvore(raiz->Filhoesquerda);
+        printf("%d (%c) ", raiz->valor, raiz->cor);
+        imprimirArvore(raiz->Filhodireita);
+    }
+}
+
+// Função para remover um elemento da árvore
+void remover(No **raiz, int valor) {
+    if (*raiz == NULL)
+        return;
+
+    if (valor < (*raiz)->valor) {
+        if ((*raiz)->Filhoesquerda != NULL &&
+            ((*raiz)->Filhoesquerda->cor == 'P' && (*raiz)->Filhoesquerda->Filhoesquerda != NULL &&
+             (*raiz)->Filhoesquerda->Filhoesquerda->cor == 'P')) {
+            (*raiz)->cor = 'P';
+            rotacaoDireita(raiz, *raiz);
+        }
+
+        remover(&(*raiz)->Filhoesquerda, valor);
+    }else if (valor > (*raiz)->valor) {
+        // ...
+        if ((*raiz)->Filhodireita != NULL &&
+            ((*raiz)->Filhodireita->cor == 'P' && (*raiz)->Filhodireita->Filhoesquerda != NULL &&
+             (*raiz)->Filhodireita->Filhoesquerda->cor == 'P')) {
+            (*raiz)->cor = 'P';
+            rotacaoEsquerda(raiz, *raiz); // Corrigido
+        }
+        // ...
+    } else {
+        if ((*raiz)->Filhoesquerda == NULL || (*raiz)->Filhodireita == NULL) {
+            No *aux = *raiz;
+            if ((*raiz)->Filhoesquerda != NULL)
+                *raiz = (*raiz)->Filhoesquerda;
+            else
+                *raiz = (*raiz)->Filhodireita;
+            free(aux);
+        } else {
+            No *aux = (*raiz)->Filhoesquerda;
+            while (aux->Filhodireita != NULL)
+                aux = aux->Filhodireita;
+
+            (*raiz)->valor = aux->valor;
+            remover(&(*raiz)->Filhoesquerda, aux->valor);
+        }
+    }
+}
+
+// Função para calcular a altura da árvore
+int alturaArvore(No *raiz) {
+    if (raiz == NULL) {
+        return 0;
+    } else {
+        int alturaEsquerda = alturaArvore(raiz->Filhoesquerda);
+        int alturaDireita = alturaArvore(raiz->Filhodireita);
+        return 1 + ((alturaEsquerda > alturaDireita) ? alturaEsquerda : alturaDireita);
+    }
+}
+
+int nivelNumero(No *raiz, int valor, int nivel) {
+    if (raiz == NULL) {
+        return -1;  // Retorna -1 se o número não for encontrado
+    } else if (valor == raiz->valor) {
+        return nivel;
+    } else if (valor < raiz->valor) {
+        return nivelNumero(raiz->Filhoesquerda, valor, nivel + 1);
+    } else {
+        return nivelNumero(raiz->Filhodireita, valor, nivel + 1);
+    }
+}
+
+// Função para imprimir a árvore em ordem
+void imprimirArvoreAux(No *raiz, int nivel) {
+    if (raiz != NULL) {
+        // Adiciona cores à impressão
+        if (raiz->cor == 'V') {
+            printf("\033[1;31m"); // Vermelho brilhante
+        } else {
+            printf("\033[1;30m"); // Preto brilhante
+        }
+
+        printf("%d (%c) [Altura %d]\n", raiz->valor, raiz->cor, nivel);
+        printf("\033[0m"); // Reseta as cores
+
+        imprimirArvoreAux(raiz->Filhodireita, nivel + 1);
+        imprimirArvoreAux(raiz->Filhoesquerda, nivel + 1);
+    }
+}
+
+
+No *buscarNumero(No *raiz, int valor) {
+    if (raiz == NULL || raiz->valor == valor) {
+        return raiz;
+    }
+
+    if (valor < raiz->valor) {
+        return buscarNumero(raiz->Filhoesquerda, valor);
+    } else {
+        return buscarNumero(raiz->Filhodireita, valor);
+    }
+}
+
+int main() {
+    No *raiz = NULL;
+
+    // Inserir valores iniciais
+    inserir(&raiz, 10);
+    inserir(&raiz, 5);
+    inserir(&raiz, 15);
+    inserir(&raiz, 3);
+    inserir(&raiz, 7);
+    inserir(&raiz, 12);
+    inserir(&raiz, 17);
+
+    // Imprimir a árvore
+    printf("Árvore após inserções:\n");
+    imprimirArvoreAux(raiz, 0);
+
+    // Remover um valor
+    remover(&raiz, 10);
+    printf("\nÁrvore após remover 10:\n");
+    imprimirArvoreAux(raiz, 0);
+
+    return 0;
+}
