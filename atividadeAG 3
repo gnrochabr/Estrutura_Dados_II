@@ -1,0 +1,212 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Enum para cores dos nós
+typedef enum { RED, BLACK } Color;
+
+// Estrutura de um nó da árvore Red-Black
+typedef struct Node {
+    int data;
+    Color color;
+    struct Node *left, *right, *parent;
+} Node;
+
+// Estrutura da árvore
+typedef struct RBTree {
+    Node *root;
+} RBTree;
+
+// Função para criar um novo nó
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->color = RED; // Todo novo nó é vermelho
+    newNode->left = NULL;
+    newNode->right = NULL;
+    newNode->parent = NULL;
+    return newNode;
+}
+
+// Função de rotação à esquerda
+void leftRotate(RBTree *tree, Node *x) {
+    Node *y = x->right;
+    x->right = y->left;
+
+    if (y->left != NULL) {
+        y->left->parent = x;
+    }
+    y->parent = x->parent;
+
+    if (x->parent == NULL) {
+        tree->root = y;
+    } else if (x == x->parent->left) {
+        x->parent->left = y;
+    } else {
+        x->parent->right = y;
+    }
+
+    y->left = x;
+    x->parent = y;
+}
+
+// Função de rotação à direita
+void rightRotate(RBTree *tree, Node *y) {
+    Node *x = y->left;
+    y->left = x->right;
+
+    if (x->right != NULL) {
+        x->right->parent = y;
+    }
+    x->parent = y->parent;
+
+    if (y->parent == NULL) {
+        tree->root = x;
+    } else if (y == y->parent->right) {
+        y->parent->right = x;
+    } else {
+        y->parent->left = x;
+    }
+
+    x->right = y;
+    y->parent = x;
+}
+
+// Função de correção após inserção
+void fixInsert(RBTree *tree, Node *newNode) {
+    Node *parent = NULL;
+    Node *grandparent = NULL;
+
+    while ((newNode != tree->root) && (newNode->color != BLACK) && (newNode->parent->color == RED)) {
+        parent = newNode->parent;
+        grandparent = parent->parent;
+
+        // Caso A: O pai de newNode é o filho à esquerda do avô
+        if (parent == grandparent->left) {
+            Node *uncle = grandparent->right;
+
+            // Caso 1: O tio é vermelho -> Recoloração
+            if (uncle != NULL && uncle->color == RED) {
+                grandparent->color = RED;
+                parent->color = BLACK;
+                uncle->color = BLACK;
+                newNode = grandparent;
+            } else {
+                // Caso 2: newNode é filho à direita -> Rotação à esquerda
+                if (newNode == parent->right) {
+                    leftRotate(tree, parent);
+                    newNode = parent;
+                    parent = newNode->parent;
+                }
+                // Caso 3: newNode é filho à esquerda -> Rotação à direita
+                rightRotate(tree, grandparent);
+                Color tempColor = parent->color;
+                parent->color = grandparent->color;
+                grandparent->color = tempColor;
+                newNode = parent;
+            }
+        } else {
+            // Caso B: O pai de newNode é o filho à direita do avô
+            Node *uncle = grandparent->left;
+
+            // Caso 1: O tio é vermelho -> Recoloração
+            if (uncle != NULL && uncle->color == RED) {
+                grandparent->color = RED;
+                parent->color = BLACK;
+                uncle->color = BLACK;
+                newNode = grandparent;
+            } else {
+                // Caso 2: newNode é filho à esquerda -> Rotação à direita
+                if (newNode == parent->left) {
+                    rightRotate(tree, parent);
+                    newNode = parent;
+                    parent = newNode->parent;
+                }
+                // Caso 3: newNode é filho à direita -> Rotação à esquerda
+                leftRotate(tree, grandparent);
+                Color tempColor = parent->color;
+                parent->color = grandparent->color;
+                grandparent->color = tempColor;
+                newNode = parent;
+            }
+        }
+    }
+
+    tree->root->color = BLACK; // A raiz sempre deve ser preta
+}
+
+// Função de inserção
+void insert(RBTree *tree, int data) {
+    Node *newNode = createNode(data);
+
+    if (tree->root == NULL) {
+        newNode->color = BLACK; // A raiz sempre deve ser preta
+        tree->root = newNode;
+    } else {
+        Node *current = tree->root;
+        Node *parent = NULL;
+
+        while (current != NULL) {
+            parent = current;
+            if (newNode->data < current->data) {
+                current = current->left;
+            } else {
+                current = current->right;
+            }
+        }
+
+        newNode->parent = parent;
+        if (newNode->data < parent->data) {
+            parent->left = newNode;
+        } else {
+            parent->right = newNode;
+        }
+
+        // Após a inserção, corrigimos a árvore
+        fixInsert(tree, newNode);
+    }
+}
+
+// Função para imprimir a árvore (pré-ordem)
+void preOrder(Node *node) {
+    if (node == NULL) return;
+    
+    printf("%d ", node->data);
+    preOrder(node->left);
+    preOrder(node->right);
+}
+
+// Função principal
+int main() {
+    RBTree tree;
+    tree.root = NULL;
+
+    int option, value;
+
+    while (1) {
+        printf("\nEscolha uma opção:\n");
+        printf("1. Inserir um valor\n");
+        printf("2. Mostrar árvore em pré-ordem\n");
+        printf("3. Sair\n");
+        printf("Opção: ");
+        scanf("%d", &option);
+
+        switch (option) {
+            case 1:
+                printf("Digite o valor a ser inserido: ");
+                scanf("%d", &value);
+                insert(&tree, value);
+                break;
+            case 2:
+                printf("Árvore em pré-ordem: ");
+                preOrder(tree.root);
+                printf("\n");
+                break;
+            case 3:
+                exit(0);
+            default:
+                printf("Opção inválida!\n");
+        }
+    }
+
+    return 0;
+}
