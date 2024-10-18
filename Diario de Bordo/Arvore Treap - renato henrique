@@ -1,20 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
+#include <time.h>
 
-// Estrutura para um nó da Treap
-typedef struct No {
-    int chave;  // Chave usada para propriedade de árvore de busca
-    int prioridade;  // Prioridade usada para propriedade de heap
-    struct No* esquerda;
-    struct No* direita;
+// Estrutura de um nó da árvore
+typedef struct no {
+    int chave;
+    int prioridade;
+    struct no *esquerda;
+    struct no *direita;
 } No;
 
-// Função para criar um novo nó com uma chave e prioridade aleatória
+// Função para gerar uma prioridade aleatória
+int prioridade_aleatoria() {
+    return rand() % 100; // Ajuste o intervalo conforme necessário
+}
+
+// Função para criar um novo nó
 No* novo_no(int chave) {
     No* temp = (No*)malloc(sizeof(No));
     temp->chave = chave;
-    temp->prioridade = rand() % 100;  // Definir prioridade aleatória
+    temp->prioridade = prioridade_aleatoria();
     temp->esquerda = temp->direita = NULL;
     return temp;
 }
@@ -24,11 +29,9 @@ No* rotacao_direita(No* y) {
     No* x = y->esquerda;
     No* T2 = x->direita;
 
-    // Executar rotação
     x->direita = y;
     y->esquerda = T2;
 
-    // Retornar nova raiz
     return x;
 }
 
@@ -37,101 +40,50 @@ No* rotacao_esquerda(No* x) {
     No* y = x->direita;
     No* T2 = y->esquerda;
 
-    // Executar rotação
     y->esquerda = x;
     x->direita = T2;
 
-    // Retornar nova raiz
     return y;
 }
 
-// Função para inserir uma chave na Treap e manter as propriedades
-No* inserir(No* raiz, int chave) {
-    if (raiz == NULL)
+// Inserção em um Treap
+No* inserir(No* no, int chave) {
+    if (no == NULL)
         return novo_no(chave);
 
-    // Inserir chave na subárvore correta de acordo com a propriedade da árvore de busca
-    if (chave < raiz->chave) {
-        raiz->esquerda = inserir(raiz->esquerda, chave);
-
-        // Verificar a propriedade da heap (prioridade) e realizar rotação à direita se necessário
-        if (raiz->esquerda != NULL && raiz->esquerda->prioridade > raiz->prioridade)
-            raiz = rotacao_direita(raiz);
+    if (chave < no->chave) {
+        no->esquerda = inserir(no->esquerda, chave);
+        if (no->esquerda->prioridade > no->prioridade)
+            no = rotacao_direita(no);
     } else {
-        raiz->direita = inserir(raiz->direita, chave);
-
-        // Verificar a propriedade da heap (prioridade) e realizar rotação à esquerda se necessário
-        if (raiz->direita != NULL && raiz->direita->prioridade > raiz->prioridade)
-            raiz = rotacao_esquerda(raiz);
+        no->direita = inserir(no->direita, chave);
+        if (no->direita->prioridade > no->prioridade)
+            no = rotacao_esquerda(no);
     }
 
-    return raiz;
+    return no;
 }
 
-// Função para deletar uma chave da Treap
-No* deletar_no(No* raiz, int chave) {
-    if (raiz == NULL)
-        return raiz;
-
-    // Procurar a chave a ser removida
-    if (chave < raiz->chave)
-        raiz->esquerda = deletar_no(raiz->esquerda, chave);
-    else if (chave > raiz->chave)
-        raiz->direita = deletar_no(raiz->direita, chave);
-    else {
-        // Se a chave for encontrada
-        if (raiz->esquerda == NULL) {
-            No* temp = raiz->direita;
-            free(raiz);
-            return temp;
-        } else if (raiz->direita == NULL) {
-            No* temp = raiz->esquerda;
-            free(raiz);
-            return temp;
-        } else {
-            // Se o nó tiver ambos os filhos, realizar rotações
-            if (raiz->esquerda->prioridade > raiz->direita->prioridade) {
-                raiz = rotacao_direita(raiz);
-                raiz->direita = deletar_no(raiz->direita, chave);
-            } else {
-                raiz = rotacao_esquerda(raiz);
-                raiz->esquerda = deletar_no(raiz->esquerda, chave);
-            }
-        }
-    }
-    return raiz;
-}
-
-// Função para impressão em ordem da Treap (in-order traversal)
+// Impressão da árvore (em ordem)
 void imprimir_em_ordem(No* raiz) {
-    if (raiz) {
+    if (raiz != NULL) {
         imprimir_em_ordem(raiz->esquerda);
-        printf("Chave: %d | Prioridade: %d\n", raiz->chave, raiz->prioridade);
+        printf("%d(%d) ", raiz->chave, raiz->prioridade);
         imprimir_em_ordem(raiz->direita);
     }
 }
 
-// Função principal
 int main() {
+    srand(time(0)); // Inicializa o gerador de números aleatórios
+
     No* raiz = NULL;
-
-    // Inserção de nós na Treap
-    raiz = inserir(raiz, 50);
-    raiz = inserir(raiz, 30);
+    raiz = inserir(raiz, 10);
     raiz = inserir(raiz, 20);
-    raiz = inserir(raiz, 40);
-    raiz = inserir(raiz, 70);
-    raiz = inserir(raiz, 60);
-    raiz = inserir(raiz, 80);
+    raiz = inserir(raiz, 30);
+    raiz = inserir(raiz, 5);
+    raiz = inserir(raiz, 15);
 
-    printf("Treap após inserções:\n");
-    imprimir_em_ordem(raiz);
-
-    // Remover nós
-    raiz = deletar_no(raiz, 20);
-    raiz = deletar_no(raiz, 30);
-
-    printf("\nTreap após remoções:\n");
+    printf("Impressão em ordem: ");
     imprimir_em_ordem(raiz);
 
     return 0;
